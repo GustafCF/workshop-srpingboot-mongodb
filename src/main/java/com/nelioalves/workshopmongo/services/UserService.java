@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nelioalves.workshopmongo.domain.User;
+import com.nelioalves.workshopmongo.dto.UserDTO;
 import com.nelioalves.workshopmongo.repository.UserRepository;
 import com.nelioalves.workshopmongo.services.exception.ObjectNotFoundException;
 
@@ -14,7 +15,6 @@ import com.nelioalves.workshopmongo.services.exception.ObjectNotFoundException;
 public class UserService {
 
 	// mecanismo de injeção de dependência automática
-
 	@Autowired
 	private UserRepository repo;
 
@@ -25,6 +25,21 @@ public class UserService {
 	public User findById(String id) {
 		Optional<User> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado"));
+	}
+
+	public User insert(User obj) {
+		return repo.insert(obj);
+	}
+	
+	public void delete(String id) {
+		//trata exceção caso o id não seja encontrado
+		findById(id);
+		//deleta com base no id
+		repo.deleteById(id);
+	}
+	
+	public User fromDTO(UserDTO objDTO) {
+		return new User(objDTO.getId(), objDTO.getName(), objDTO.getEmail());
 	}
 
 }
